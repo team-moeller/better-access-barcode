@@ -3,3 +3,7 @@ Create barcodes in Access with JsBarcode
 
 ## Why Better-Access-Barcode?
 In Access we don't have a buildt in option for generating barcodes. To do so we need a third-party active-x control.
+
+But why use a third-party ocx when we can have it in Access. There are many solutions for barcodes based on Java Script available on the web. This project makes use of this. We create different types of barcodes using the JsBarcode library and display them in the web browser control. The whole logic is hidden in a class module.
+
+Take a look at the demo and let yourself be inspired by the possibilities.

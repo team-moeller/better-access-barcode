@@ -2,7 +2,7 @@ Attribute VB_Name = "mdl_Helpers"
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 0.94.03  published: 28.09.2022                                                   #
+'# Version 1.00.05  published: 29.09.2022                                                   #
 '############################################################################################
 
 Option Compare Database

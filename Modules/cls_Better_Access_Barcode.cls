@@ -10,11 +10,34 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.00.05  published: 29.09.2022                                                   #
+'# Version 1.01.06  published: 30.09.2022                                                   #
 '############################################################################################
 
 Option Compare Database
 Option Explicit
+
+
+'### Enums
+
+Public Enum bcFormat
+    CODE128A = 1
+    CODE128B = 2
+    CODE128C = 3
+    EAN13 = 4
+    UPC = 5
+    EAN8 = 6
+    EAN5 = 7
+    EAN2 = 8
+    CODE39 = 9
+    ITF14 = 10
+    MSI = 11
+    MSI10 = 12
+    MSI11 = 13
+    MSI1010 = 14
+    MSI1110 = 15
+    pharmacode = 16
+    codabar = 17
+End Enum
 
 
 '### Members
@@ -22,6 +45,7 @@ Option Explicit
 Private WithEvents m_Control As WebbrowserControl
 Attribute m_Control.VB_VarHelpID = -1
 Private m_Data As String
+Private m_Format As bcFormat
 
 
 '### Properties
@@ -39,6 +63,14 @@ End Property
 Public Property Get Data() As String
     Data = m_Data
 End Property
+
+Public Property Let Format(This_Format As bcFormat)
+    m_Format = This_Format
+End Property
+Public Property Get Format() As bcFormat
+    Format = m_Format
+End Property
+
 
 '### Instanzing
 
@@ -121,9 +153,9 @@ Private Function getScript() As String
     strText = strText & "    <canvas id='barcode'></canvas>" & vbCrLf
     strText = strText & "    <script>" & vbCrLf
     strText = strText & "        JsBarcode('#barcode', '" & Data & "', {" & vbCrLf
+    strText = strText & "            format:'" & getBarcodeFormatString(Format) & "'," & vbCrLf
     strText = strText & "            background:'#ffffff'," & vbCrLf
     strText = strText & "            displayValue:true," & vbCrLf
-    strText = strText & "            format:'CODE39'," & vbCrLf
     strText = strText & "            font:'fantasy'," & vbCrLf
     strText = strText & "            fontOptions:'bold italic'," & vbCrLf
     strText = strText & "            fontSize:12," & vbCrLf
@@ -154,5 +186,53 @@ Private Function getFoot() As String
     strText = strText & "</html>"
     
     getFoot = strText
+    
+End Function
+
+Private Function getBarcodeFormatString(This_Format As bcFormat) As String
+
+    'Variablen deklarieren
+    Dim strText As String
+    
+    Select Case This_Format
+        Case bcFormat.CODE128A
+            strText = "CODE128A"
+        Case bcFormat.CODE128B
+            strText = "CODE128B"
+        Case bcFormat.CODE128C
+            strText = "CODE128C"
+        Case bcFormat.EAN13
+            strText = "EAN13"
+        Case bcFormat.UPC
+            strText = "UPC"
+        Case bcFormat.EAN8
+            strText = "EAN8"
+        Case bcFormat.EAN5
+            strText = "EAN5"
+        Case bcFormat.EAN2
+            strText = "EAN2"
+        Case bcFormat.CODE39
+            strText = "CODE39"
+        Case bcFormat.ITF14
+            strText = "ITF14"
+        Case bcFormat.MSI
+            strText = "MSI"
+        Case bcFormat.MSI10
+            strText = "MSI10"
+        Case bcFormat.MSI11
+            strText = "MSI11"
+        Case bcFormat.MSI1010
+            strText = "MSI1010"
+        Case bcFormat.MSI1110
+            strText = "MSI1110"
+        Case bcFormat.pharmacode
+            strText = "pharmacode"
+        Case bcFormat.codabar
+            strText = "codabar"
+        Case Else
+            strText = "CODE128"
+    End Select
+    
+    getBarcodeFormatString = strText
     
 End Function

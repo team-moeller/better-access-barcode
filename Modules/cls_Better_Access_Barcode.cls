@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.01.06  published: 30.09.2022                                                   #
+'# Version 1.02.05  published: 01.10.2022                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -46,6 +46,7 @@ Private WithEvents m_Control As WebbrowserControl
 Attribute m_Control.VB_VarHelpID = -1
 Private m_Data As String
 Private m_Format As bcFormat
+Private m_BarWidth As Long
 
 
 '### Properties
@@ -69,6 +70,13 @@ Public Property Let Format(This_Format As bcFormat)
 End Property
 Public Property Get Format() As bcFormat
     Format = m_Format
+End Property
+
+Public Property Let BarWidth(This_BarWidth As Long)
+    m_BarWidth = This_BarWidth
+End Property
+Public Property Get BarWidth() As Long
+    BarWidth = m_BarWidth
 End Property
 
 
@@ -152,8 +160,9 @@ Private Function getScript() As String
     
     strText = strText & "    <canvas id='barcode'></canvas>" & vbCrLf
     strText = strText & "    <script>" & vbCrLf
-    strText = strText & "        JsBarcode('#barcode', '" & Data & "', {" & vbCrLf
-    strText = strText & "            format:'" & getBarcodeFormatString(Format) & "'," & vbCrLf
+    strText = strText & "        JsBarcode('#barcode', '" & Me.Data & "', {" & vbCrLf
+    strText = strText & "            format:'" & getBarcodeFormatString(Me.Format) & "'," & vbCrLf
+    strText = strText & "            width:" & Me.BarWidth & "," & vbCrLf
     strText = strText & "            background:'#ffffff'," & vbCrLf
     strText = strText & "            displayValue:true," & vbCrLf
     strText = strText & "            font:'fantasy'," & vbCrLf
@@ -168,8 +177,7 @@ Private Function getScript() As String
     strText = strText & "            marginTop:10," & vbCrLf
     strText = strText & "            textAlign:'center'," & vbCrLf
     strText = strText & "            textMargin:2," & vbCrLf
-    strText = strText & "            textPosition:'bottom'," & vbCrLf
-    strText = strText & "            width:2" & vbCrLf
+    strText = strText & "            textPosition:'bottom'" & vbCrLf
     strText = strText & "        });" & vbCrLf
     strText = strText & "    </script>" & vbCrLf
     

@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.02.05  published: 01.10.2022                                                   #
+'# Version 1.03.13  published: 02.10.2022                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -18,6 +18,11 @@ Option Explicit
 
 
 '### Enums
+
+Public Enum bcScriptSource
+    CDN = 1
+    LocalFile = 2
+End Enum
 
 Public Enum bcFormat
     CODE128A = 1
@@ -44,6 +49,9 @@ End Enum
 
 Private WithEvents m_Control As WebbrowserControl
 Attribute m_Control.VB_VarHelpID = -1
+Private m_JsBarcodeSource As bcScriptSource
+Private m_JsBarcodeCDN As String
+Private m_JsBarcodePathFilename As String
 Private m_Data As String
 Private m_Format As bcFormat
 Private m_BarWidth As Long
@@ -56,6 +64,27 @@ Public Property Set Control(This_Control As WebbrowserControl)
 End Property
 Public Property Get Control() As WebbrowserControl
     Set Control = m_Control
+End Property
+
+Public Property Let JsBarcodeSource(ByVal newValue As bcScriptSource)
+    m_JsBarcodeSource = newValue
+End Property
+Public Property Get JsBarcodeSource() As bcScriptSource
+    JsBarcodeSource = m_JsBarcodeSource
+End Property
+
+Public Property Let JsBarcodeCDN(ByVal newValue As String)
+    m_JsBarcodeCDN = newValue
+End Property
+Public Property Get JsBarcodeCDN() As String
+    JsBarcodeCDN = m_JsBarcodeCDN
+End Property
+
+Public Property Let JsBarcodePathFilename(ByVal newValue As String)
+    m_JsBarcodePathFilename = newValue
+End Property
+Public Property Get JsBarcodePathFilename() As String
+    JsBarcodePathFilename = m_JsBarcodePathFilename
 End Property
 
 Public Property Let Data(This_Data As String)
@@ -83,7 +112,11 @@ End Property
 '### Instanzing
 
 Private Sub Class_Initialize()
-    ' Do Nothing
+
+    Me.JsBarcodeSource = bcScriptSource.CDN
+    Me.JsBarcodeCDN = "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"
+    Me.JsBarcodePathFilename = CurrentProject.Path & "\JsBarcode.all.min.js"
+    
 End Sub
 
 Private Sub Class_Terminate()
@@ -145,7 +178,7 @@ Private Function getHead() As String
     strText = strText & "    <meta http-equiv='X-UA-Compatible' content='IE=Edge'/>" & vbCrLf
     strText = strText & "    <title>Better Access Barcode</title>" & vbCrLf
     strText = strText & "    <style>body{margin:0;padding:0;}</style>" & vbCrLf
-    strText = strText & "    <script src='https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js'></script>" & vbCrLf
+    strText = strText & "    <script src=" & getLocation & "></script>" & vbCrLf
     strText = strText & "</head>" & vbCrLf
     strText = strText & "<body>" & vbCrLf
     
@@ -244,3 +277,22 @@ Private Function getBarcodeFormatString(This_Format As bcFormat) As String
     getBarcodeFormatString = strText
     
 End Function
+
+Private Function getLocation() As String
+
+    'Declarations
+    Dim strText As String
+    
+    Select Case Me.JsBarcodeSource
+        Case bcScriptSource.CDN
+            strText = "'" & Me.JsBarcodeCDN & "'"
+        Case bcScriptSource.LocalFile
+            strText = "'" & Me.JsBarcodePathFilename & "'"
+        Case Else
+            'Do nothing
+    End Select
+            
+    getLocation = strText
+
+End Function
+

@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.03.13  published: 02.10.2022                                                   #
+'# Version 1.04.16  published: 03.10.2022                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -55,12 +55,15 @@ Private m_JsBarcodePathFilename As String
 Private m_Data As String
 Private m_Format As bcFormat
 Private m_BarWidth As Long
-
+Private m_Height As Long
+Private m_Background As String
+Private m_LineColor As String
+Private m_Margin As Long
 
 '### Properties
 
-Public Property Set Control(This_Control As WebbrowserControl)
-    Set m_Control = This_Control
+Public Property Set Control(newValue As WebbrowserControl)
+    Set m_Control = newValue
 End Property
 Public Property Get Control() As WebbrowserControl
     Set Control = m_Control
@@ -87,25 +90,53 @@ Public Property Get JsBarcodePathFilename() As String
     JsBarcodePathFilename = m_JsBarcodePathFilename
 End Property
 
-Public Property Let Data(This_Data As String)
-    m_Data = This_Data
+Public Property Let Data(newValue As String)
+    m_Data = newValue
 End Property
 Public Property Get Data() As String
     Data = m_Data
 End Property
 
-Public Property Let Format(This_Format As bcFormat)
-    m_Format = This_Format
+Public Property Let Format(newValue As bcFormat)
+    m_Format = newValue
 End Property
 Public Property Get Format() As bcFormat
     Format = m_Format
 End Property
 
-Public Property Let BarWidth(This_BarWidth As Long)
-    m_BarWidth = This_BarWidth
+Public Property Let BarWidth(newValue As Long)
+    m_BarWidth = newValue
 End Property
 Public Property Get BarWidth() As Long
     BarWidth = m_BarWidth
+End Property
+
+Public Property Let Height(newValue As Long)
+    m_Height = newValue
+End Property
+Public Property Get Height() As Long
+    Height = m_Height
+End Property
+
+Public Property Let Background(ByVal newValue As String)
+    m_Background = newValue
+End Property
+Public Property Get Background() As String
+    Background = m_Background
+End Property
+
+Public Property Let LineColor(ByVal newValue As String)
+    m_LineColor = newValue
+End Property
+Public Property Get LineColor() As String
+    LineColor = m_LineColor
+End Property
+
+Public Property Let Margin(newValue As Long)
+    m_Margin = newValue
+End Property
+Public Property Get Margin() As Long
+    Margin = m_Margin
 End Property
 
 
@@ -196,21 +227,21 @@ Private Function getScript() As String
     strText = strText & "        JsBarcode('#barcode', '" & Me.Data & "', {" & vbCrLf
     strText = strText & "            format:'" & getBarcodeFormatString(Me.Format) & "'," & vbCrLf
     strText = strText & "            width:" & Me.BarWidth & "," & vbCrLf
-    strText = strText & "            background:'#ffffff'," & vbCrLf
+    strText = strText & "            height:" & Me.Height & "," & vbCrLf
+    strText = strText & "            background:'" & Me.Background & "'," & vbCrLf
+    strText = strText & "            lineColor:'" & Me.LineColor & "'," & vbCrLf
+    strText = strText & "            margin:" & Me.Margin & "," & vbCrLf
+'    strText = strText & "            marginTop:10," & vbCrLf
+'    strText = strText & "            marginLeft:10," & vbCrLf
+'    strText = strText & "            marginRight:10," & vbCrLf
+'    strText = strText & "            marginBottom:10," & vbCrLf
     strText = strText & "            displayValue:true," & vbCrLf
     strText = strText & "            font:'fantasy'," & vbCrLf
     strText = strText & "            fontOptions:'bold italic'," & vbCrLf
     strText = strText & "            fontSize:12," & vbCrLf
-    strText = strText & "            height:75," & vbCrLf
-    strText = strText & "            lineColor:'#000000'," & vbCrLf
-    strText = strText & "            margin: 10," & vbCrLf
-    strText = strText & "            marginBottom:10," & vbCrLf
-    strText = strText & "            marginLeft:10," & vbCrLf
-    strText = strText & "            marginRight:10," & vbCrLf
-    strText = strText & "            marginTop:10," & vbCrLf
     strText = strText & "            textAlign:'center'," & vbCrLf
-    strText = strText & "            textMargin:2," & vbCrLf
-    strText = strText & "            textPosition:'bottom'" & vbCrLf
+    strText = strText & "            textPosition:'bottom'," & vbCrLf
+    strText = strText & "            textMargin:2" & vbCrLf
     strText = strText & "        });" & vbCrLf
     strText = strText & "    </script>" & vbCrLf
     

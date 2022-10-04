@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.04.16  published: 03.10.2022                                                   #
+'# Version 1.05.13  published: 04.10.2022                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -59,6 +59,11 @@ Private m_Height As Long
 Private m_Background As String
 Private m_LineColor As String
 Private m_Margin As Long
+Private m_DisplayValue As Boolean
+Private m_Font As String
+Private m_IsBold As Boolean
+Private m_IsItalic As Boolean
+
 
 '### Properties
 
@@ -139,6 +144,34 @@ Public Property Get Margin() As Long
     Margin = m_Margin
 End Property
 
+Public Property Let DisplayValue(newValue As Boolean)
+    m_DisplayValue = newValue
+End Property
+Public Property Get DisplayValue() As Boolean
+    DisplayValue = m_DisplayValue
+End Property
+
+Public Property Let Font(ByVal newValue As String)
+    m_Font = newValue
+End Property
+Public Property Get Font() As String
+    Font = m_Font
+End Property
+
+Public Property Let IsBold(newValue As Boolean)
+    m_IsBold = newValue
+End Property
+Public Property Get IsBold() As Boolean
+    IsBold = m_IsBold
+End Property
+
+Public Property Let IsItalic(newValue As Boolean)
+    m_IsItalic = newValue
+End Property
+Public Property Get IsItalic() As Boolean
+    IsItalic = m_IsItalic
+End Property
+
 
 '### Instanzing
 
@@ -147,6 +180,8 @@ Private Sub Class_Initialize()
     Me.JsBarcodeSource = bcScriptSource.CDN
     Me.JsBarcodeCDN = "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"
     Me.JsBarcodePathFilename = CurrentProject.Path & "\JsBarcode.all.min.js"
+    
+    Me.DisplayValue = True
     
 End Sub
 
@@ -235,9 +270,9 @@ Private Function getScript() As String
 '    strText = strText & "            marginLeft:10," & vbCrLf
 '    strText = strText & "            marginRight:10," & vbCrLf
 '    strText = strText & "            marginBottom:10," & vbCrLf
-    strText = strText & "            displayValue:true," & vbCrLf
-    strText = strText & "            font:'fantasy'," & vbCrLf
-    strText = strText & "            fontOptions:'bold italic'," & vbCrLf
+    strText = strText & "            displayValue:" & IIf(Me.DisplayValue, "true", "false") & " ," & vbCrLf
+    strText = strText & "            font:'" & Me.Font & "'," & vbCrLf
+    strText = strText & "            fontOptions:" & getFontOptions & "," & vbCrLf
     strText = strText & "            fontSize:12," & vbCrLf
     strText = strText & "            textAlign:'center'," & vbCrLf
     strText = strText & "            textPosition:'bottom'," & vbCrLf
@@ -326,4 +361,26 @@ Private Function getLocation() As String
     getLocation = strText
 
 End Function
+
+Private Function getFontOptions() As String
+
+    'Declarations
+    Dim strText As String
+
+    If Me.IsBold = True Then
+        strText = "bold"
+    End If
+    If Me.IsItalic = True Then
+        If Len(strText) = 0 Then
+            strText = "italic"
+        Else
+            strText = "bold italic"
+        End If
+    End If
+    strText = "'" & strText & "'"
+        
+    getFontOptions = strText
+
+End Function
+
 

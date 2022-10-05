@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.05.13  published: 04.10.2022                                                   #
+'# Version 1.06.10  published: 05.10.2022                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -22,6 +22,12 @@ Option Explicit
 Public Enum bcScriptSource
     CDN = 1
     LocalFile = 2
+End Enum
+
+Public Enum bcTextAlign
+    taLeft = 1
+    taCenter = 2
+    taRight = 3
 End Enum
 
 Public Enum bcFormat
@@ -63,6 +69,8 @@ Private m_DisplayValue As Boolean
 Private m_Font As String
 Private m_IsBold As Boolean
 Private m_IsItalic As Boolean
+Private m_FontSize As Long
+Private m_TextAlign As bcTextAlign
 
 
 '### Properties
@@ -172,6 +180,20 @@ Public Property Get IsItalic() As Boolean
     IsItalic = m_IsItalic
 End Property
 
+Public Property Let FontSize(newValue As Long)
+    m_FontSize = newValue
+End Property
+Public Property Get FontSize() As Long
+    FontSize = m_FontSize
+End Property
+
+Public Property Let TextAlign(ByVal newValue As bcTextAlign)
+    m_TextAlign = newValue
+End Property
+Public Property Get TextAlign() As bcTextAlign
+    TextAlign = m_TextAlign
+End Property
+
 
 '### Instanzing
 
@@ -182,6 +204,9 @@ Private Sub Class_Initialize()
     Me.JsBarcodePathFilename = CurrentProject.Path & "\JsBarcode.all.min.js"
     
     Me.DisplayValue = True
+    Me.Font = "Monospace"
+    Me.FontSize = 12
+    Me.TextAlign = bcTextAlign.taCenter
     
 End Sub
 
@@ -273,8 +298,8 @@ Private Function getScript() As String
     strText = strText & "            displayValue:" & IIf(Me.DisplayValue, "true", "false") & " ," & vbCrLf
     strText = strText & "            font:'" & Me.Font & "'," & vbCrLf
     strText = strText & "            fontOptions:" & getFontOptions & "," & vbCrLf
-    strText = strText & "            fontSize:12," & vbCrLf
-    strText = strText & "            textAlign:'center'," & vbCrLf
+    strText = strText & "            fontSize:" & Me.FontSize & "," & vbCrLf
+    strText = strText & "            textAlign:" & getTextAlign & "," & vbCrLf
     strText = strText & "            textPosition:'bottom'," & vbCrLf
     strText = strText & "            textMargin:2" & vbCrLf
     strText = strText & "        });" & vbCrLf
@@ -383,4 +408,25 @@ Private Function getFontOptions() As String
 
 End Function
 
+Private Function getTextAlign() As String
+
+    'Declarations
+    Dim strText As String
+
+    Select Case Me.TextAlign
+        Case bcTextAlign.taLeft
+            strText = "left"
+        Case bcTextAlign.taCenter
+            strText = "cnter"
+        Case bcTextAlign.taRight
+            strText = "right"
+        Case Else
+            strText = "center"
+    End Select
+
+    strText = "'" & strText & "'"
+        
+    getTextAlign = strText
+
+End Function
 

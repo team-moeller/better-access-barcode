@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.06.10  published: 05.10.2022                                                   #
+'# Version 1.07.03  published: 06.10.2022                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -28,6 +28,11 @@ Public Enum bcTextAlign
     taLeft = 1
     taCenter = 2
     taRight = 3
+End Enum
+
+Public Enum bcTextPosition
+    tpBottom = 1
+    tpTop = 2
 End Enum
 
 Public Enum bcFormat
@@ -71,6 +76,8 @@ Private m_IsBold As Boolean
 Private m_IsItalic As Boolean
 Private m_FontSize As Long
 Private m_TextAlign As bcTextAlign
+Private m_TextPosition As bcTextPosition
+Private m_TextMargin As Long
 
 
 '### Properties
@@ -194,6 +201,20 @@ Public Property Get TextAlign() As bcTextAlign
     TextAlign = m_TextAlign
 End Property
 
+Public Property Let TextPosition(ByVal newValue As bcTextPosition)
+    m_TextPosition = newValue
+End Property
+Public Property Get TextPosition() As bcTextPosition
+    TextPosition = m_TextPosition
+End Property
+
+Public Property Let TextMargin(newValue As Long)
+    m_TextMargin = newValue
+End Property
+Public Property Get TextMargin() As Long
+    TextMargin = m_TextMargin
+End Property
+
 
 '### Instanzing
 
@@ -207,6 +228,8 @@ Private Sub Class_Initialize()
     Me.Font = "Monospace"
     Me.FontSize = 12
     Me.TextAlign = bcTextAlign.taCenter
+    Me.TextPosition = bcTextPosition.tpBottom
+    Me.TextMargin = 10
     
 End Sub
 
@@ -300,8 +323,8 @@ Private Function getScript() As String
     strText = strText & "            fontOptions:" & getFontOptions & "," & vbCrLf
     strText = strText & "            fontSize:" & Me.FontSize & "," & vbCrLf
     strText = strText & "            textAlign:" & getTextAlign & "," & vbCrLf
-    strText = strText & "            textPosition:'bottom'," & vbCrLf
-    strText = strText & "            textMargin:2" & vbCrLf
+    strText = strText & "            textPosition:" & getTextPosition & "," & vbCrLf
+    strText = strText & "            textMargin:" & Me.TextMargin & "" & vbCrLf
     strText = strText & "        });" & vbCrLf
     strText = strText & "    </script>" & vbCrLf
     
@@ -417,7 +440,7 @@ Private Function getTextAlign() As String
         Case bcTextAlign.taLeft
             strText = "left"
         Case bcTextAlign.taCenter
-            strText = "cnter"
+            strText = "center"
         Case bcTextAlign.taRight
             strText = "right"
         Case Else
@@ -427,6 +450,26 @@ Private Function getTextAlign() As String
     strText = "'" & strText & "'"
         
     getTextAlign = strText
+
+End Function
+
+Private Function getTextPosition() As String
+
+    'Declarations
+    Dim strText As String
+
+    Select Case Me.TextPosition
+        Case bcTextPosition.tpBottom
+            strText = "bottom"
+        Case bcTextPosition.tpTop
+            strText = "top"
+        Case Else
+            strText = "bottom"
+    End Select
+
+    strText = "'" & strText & "'"
+        
+    getTextPosition = strText
 
 End Function
 

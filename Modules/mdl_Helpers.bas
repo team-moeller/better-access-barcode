@@ -2,7 +2,7 @@ Attribute VB_Name = "mdl_Helpers"
 '############################################################################################
 '# Copyright (c) 2022 Thomas Möller                                                         #
 '# MIT License  => https://github.com/team-moeller/better-access-barcode/blob/main/LICENSE  #
-'# Version 1.08.02  published: 15.10.2022                                                   #
+'# Version 1.09.02  published: 16.09.2023                                                   #
 '############################################################################################
 
 Option Compare Database
@@ -19,7 +19,7 @@ Public Function File2OLE(ByVal Table As String, ByVal PrimaryKeyFieldName As Str
                          ByVal FileName As String, Optional ByVal InCurrentProjectPath As Boolean) As Long
 
 'Prerequisit: Record with ID must already exist
-'Call: File2OLE("USys_FileData","ID","FileData","1","Pivot.min.js",True)
+'Call: File2OLE("USys_FileData","ID","FileData","1","JsBarcode.all.min.js",True)
 
     On Error GoTo Handle_Error
 
@@ -53,7 +53,7 @@ Public Function File2OLE(ByVal Table As String, ByVal PrimaryKeyFieldName As Str
 
     Open PathFilename For Binary Access Read Lock Read Write As FileID
 
-    FileSize = FileLen(PathFilename)
+    FileSize = FileLen(PathFilename) - 1      '-1 to exclude NUL at the end
     ReDim Buffer(FileSize)
     rst(TargetFieldName) = Null
     Get FileID, , Buffer
